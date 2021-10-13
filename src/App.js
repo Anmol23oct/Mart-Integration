@@ -3,13 +3,27 @@ import './App.css';
 import { Table } from './Table';
 import React, {useState} from 'react'
 import Radio from '@material-ui/core/Radio'
+import axios from 'axios'
 import { Box, FormControl, FormControlLabel, FormLabel, RadioGroup } from '@material-ui/core'
+
+
 
 function App() {
   const[data,setData]=useState(null)
   const[print,setPrint]=useState(false)
   const[category,setcategory]=useState("redshift")
   const[database,setdata]=useState("insta")
+  const api= axios.create({
+    baseURL:'abcc://'
+  })
+  /*state={
+    items:[]
+  }*/
+  api.get('/').then(res=>{
+    console.log(res.data)
+    this.setState({items:res.data})
+  })
+  
   function getData(val)
     {
       setData(val.target.value)
@@ -21,6 +35,8 @@ function App() {
 
     <div className="App">
       <h2>DBDS-App</h2>
+      
+      
       <div className="Form1">
       <FormControl>
         <FormLabel> Database </FormLabel>
