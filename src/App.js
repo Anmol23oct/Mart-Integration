@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
-import { Table } from './Table';
-import React, {useState} from 'react'
+import BasicTable from './Table';
+import React, {useEffect, useState} from 'react'
 import Radio from '@material-ui/core/Radio'
 import axios from 'axios'
 import { Box, FormControl, FormControlLabel, FormLabel, RadioGroup } from '@material-ui/core'
@@ -9,27 +9,24 @@ import { Box, FormControl, FormControlLabel, FormLabel, RadioGroup } from '@mate
 
 
 function App() {
-  const[data,setData]=useState(null)
+  const[data,setData]=useState({table: [{'test': 'test'}]})
+  const[query,setQuery]=useState("")
   const[print,setPrint]=useState(false)
-  const[category,setcategory]=useState("redshift")
-  const[database,setdata]=useState("insta")
-  const api= axios.create({
-    baseURL:'abcc://'
-  })
-  /*state={
-    items:[]
-  }*/
-  api.get('/').then(res=>{
-    console.log(res.data)
-    this.setState({items:res.data})
-  })
-  
-  function getData(val)
-    {
-      setData(val.target.value)
-      setPrint(false)
-      console.warn(val.target.value)
-    }
+  const[category,setcategory]=useState("mysql")
+  const[database,setddata]=useState("insta")
+
+  useEffect(()=>{
+
+  }, [])
+
+  const fetchData = async () => {
+    let data = await fetch(`http://ec2-3-82-110-179.compute-1.amazonaws.com:8080/home/parseQuery?query=${query}&type=${category}`)
+      data = await data.json()
+      console.log(data)
+      // process data
+      setData(data)
+  }  
+
   return (
 
 
@@ -40,7 +37,7 @@ function App() {
       <div className="Form1">
       <FormControl>
         <FormLabel> Database </FormLabel>
-        <RadioGroup value={database} onChange={(e)=> setcategory(e.target.value)} row >
+        <RadioGroup value={database} onChange={(e)=> setddata(e.target.value)} row >
           <FormControlLabel value="insta" control ={<Radio/>} label="Instacart"/>
         </RadioGroup>
       </FormControl>
@@ -61,14 +58,14 @@ function App() {
 
       {
         print?
-        <h1>{data}</h1>
+        <h1>{category}{database}</h1>
         :null
       }
       <div>
 
-        <textarea style={{ width: 1055, height:400}}
+        <textarea style={{ width: 1210, height:400}}
           // value={this.state.textAreaValue}
-          onChange={getData}
+          onChange={(e) => {setQuery(e.target.value)}}
           row={5}
           col={5}
           placeholder="Enter Query"
@@ -79,9 +76,9 @@ function App() {
       
       {/* <input type="text" onChange={getData} /> */}
       <button color="#ff5c5c" style={{height: '30px', width : '100px'}}
-      onClick={()=>setPrint(true)}> Submit Query</button>
+      onClick={()=>{fetchData()}}> Submit Query</button>
 
-      <Table/>
+      <BasicTable data={data}/>
       
 
     </div>
