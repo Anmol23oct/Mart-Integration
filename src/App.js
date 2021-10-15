@@ -30,7 +30,7 @@ function App() {
   return (
 
 
-    <div className="App">
+    <div className="App" meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
       <h2>DBDS-App</h2>
       
       
