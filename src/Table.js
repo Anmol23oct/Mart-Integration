@@ -5,9 +5,11 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Pagination from "react-js-pagination";
 
 import Paper from '@mui/material/Paper';
 //import MaterialTable  from 'material-table'
+import TablePagination from '@material-ui/core/TablePagination';
 import axios  from 'axios'
 
 export default function BasicTable({data}) {
@@ -15,6 +17,8 @@ export default function BasicTable({data}) {
     console.log('test', data.table)
 
     let new_data = []
+    let temp= []
+    const [main_data,setmain_data]=useState([])
     console.log(Object.values(data.table))
     const columns = Object.keys(data.table[0]).map((ele, idx) => {return {
   
@@ -29,26 +33,58 @@ export default function BasicTable({data}) {
     })
 
     
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage,setRowsPerPage]=useState(20)
+  // total records per page to display
+  const recordPerPage = rowsPerPage;
+
+  // total number of the records
+  const totalRecords = new_data.length;
+
+  // range of pages in paginator
+  const pageRange = 5;
+  const pagedecide= (currentPage) * recordPerPage
+  // handle change event
+  //main_data=new_data.slice((1 - 1) * recordPerPage, 1 * recordPerPage)
+  const handlePageChange = (event,pageNumber) => {
+    setCurrentPage(pageNumber);
+    // call API to get data based on pageNumber
+    let temp= []
+    pageNumber=pageNumber+1
+    temp=new_data.slice((pageNumber - 1) * recordPerPage, pageNumber * recordPerPage);
+    setmain_data(temp)
+    console.log('maindata', temp)
+  }
+
+  const handleChangeRowsPerPage=(event)=>{
+    setRowsPerPage(parseInt(event.target.value,20));
+    setCurrentPage(0);
+  }
+
+
+
+
     console.log('test2', new_data)
 
     return (
-      <TableContainer component={Paper}>
+      <div className="TableStart">
+      <TableContainer component={Paper} >
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-            <TableCell>sl no</TableCell>
+            <TableCell>S.No</TableCell>
             {columns.map((col) => (
               <TableCell>{col.title}</TableCell>
             ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {new_data.map((row, idx) => (
+            {main_data.map((row, pagedecide) => (
               <TableRow
                 key={row.name}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell>{idx+1}</TableCell>
+                <TableCell>{pagedecide+1}</TableCell>
                 {Object.keys(row).map(r => (
                     <TableCell component="th" scope="row">
                         {row[r]}
@@ -59,6 +95,16 @@ export default function BasicTable({data}) {
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+      component="Paper" // add it for bootstrap 4
+      count={totalRecords}
+      page={currentPage}
+      onChangePage={handlePageChange}
+      rowsPerPage={recordPerPage}
+      onChangeRowsPerPage={handleChangeRowsPerPage}
+    />
+     
+    </div>
     );
   }
 
