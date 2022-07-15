@@ -1,4 +1,5 @@
-Create three database on AWS
+Objectives Completed:
+Created three database on AWS
 Mysql
 Redshift
 MongoDB
