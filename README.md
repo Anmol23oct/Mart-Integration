@@ -12,5 +12,4 @@ Validate the working of the webapp through querying.
 
 # Code File :
 
-
 Src
